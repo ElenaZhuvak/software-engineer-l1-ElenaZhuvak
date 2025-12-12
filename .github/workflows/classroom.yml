@@ -25,6 +25,11 @@ jobs:
     - name: Build project
       run: npm run build
 
+    - name: Copy data.json and script.js to dist
+      run: |
+        cp data.json dist/data.json
+        cp script.js dist/script.js
+
     - name: Start preview server
       run: npm run preview >/dev/null 2>&1 & sleep 5
 
@@ -68,19 +73,7 @@ jobs:
       with:
         test-name: Has products grid element
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(1000);
-            const grid = await page.$('#products-grid');
-            await browser.close();
-            console.log(grid ? 'true' : 'false');
-          })();
-          "
+        command: node tests/autograding-tests.js has-products-grid
         input: ''
         expected-output: 'true'
         comparison-method: exact
@@ -93,19 +86,7 @@ jobs:
       with:
         test-name: Has search input
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(1000);
-            const input = await page.$('input[type=\"text\"], input[type=\"search\"]');
-            await browser.close();
-            console.log(input ? 'true' : 'false');
-          })();
-          "
+        command: node tests/autograding-tests.js has-search-input
         input: ''
         expected-output: 'true'
         comparison-method: exact
@@ -118,19 +99,7 @@ jobs:
       with:
         test-name: Has filter dropdowns
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(1000);
-            const selects = await page.$$('select');
-            await browser.close();
-            console.log(selects.length >= 2 ? 'true' : 'false');
-          })();
-          "
+        command: node tests/autograding-tests.js has-filter-dropdowns
         input: ''
         expected-output: 'true'
         comparison-method: exact
@@ -144,19 +113,7 @@ jobs:
       with:
         test-name: Products load and display
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(2000);
-            const products = await page.$$('#products-grid > *');
-            await browser.close();
-            console.log(products.length >= 10 ? 'true' : 'false');
-          })();
-          "
+        command: node tests/autograding-tests.js products-load-and-display
         input: ''
         expected-output: 'true'
         comparison-method: exact
@@ -169,24 +126,7 @@ jobs:
       with:
         test-name: Search filters products
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(2000);
-            const initialCount = (await page.$$('#products-grid > *')).length;
-            const input = await page.$('input[type=\"text\"], input[type=\"search\"]');
-            if (!input) { await browser.close(); console.log('false'); return; }
-            await input.fill('iPhone');
-            await page.waitForTimeout(500);
-            const filteredCount = (await page.$$('#products-grid > *')).length;
-            await browser.close();
-            console.log(filteredCount < initialCount && filteredCount > 0 ? 'true' : 'false');
-          })();
-          "
+        command: node tests/autograding-tests.js search-filters-products
         input: ''
         expected-output: 'true'
         comparison-method: exact
@@ -199,41 +139,7 @@ jobs:
       with:
         test-name: Category filter works
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(2000);
-            const initialCount = (await page.$$('#products-grid > *')).length;
-            const selects = await page.$$('select');
-            if (selects.length < 1) { await browser.close(); console.log('false'); return; }
-
-            // Try to select Laptops or Phones
-            let filtered = false;
-            for (const select of selects) {
-              const options = await select.$$('option');
-              for (const option of options) {
-                const value = await option.getAttribute('value');
-                const text = await option.textContent();
-                if (text.includes('Laptop') || text.includes('Phone')) {
-                  await select.selectOption(value);
-                  await page.waitForTimeout(500);
-                  const newCount = (await page.$$('#products-grid > *')).length;
-                  if (newCount < initialCount && newCount > 0) {
-                    filtered = true;
-                    break;
-                  }
-                }
-              }
-              if (filtered) break;
-            }
-            await browser.close();
-            console.log(filtered ? 'true' : 'false');
-          })();
-          "
+        command: node tests/autograding-tests.js category-filter-works
         input: ''
         expected-output: 'true'
         comparison-method: exact
@@ -246,38 +152,7 @@ jobs:
       with:
         test-name: Price sorting works
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(2000);
-
-            const selects = await page.$$('select');
-            if (selects.length < 2) { await browser.close(); console.log('false'); return; }
-
-            // Try to find and use sort dropdown
-            let sorted = false;
-            for (const select of selects) {
-              const options = await select.$$('option');
-              for (const option of options) {
-                const text = await option.textContent();
-                if (text.includes('Low to High') || text.includes('High to Low') || text.includes('Price')) {
-                  const value = await option.getAttribute('value');
-                  await select.selectOption(value);
-                  await page.waitForTimeout(500);
-                  sorted = true;
-                  break;
-                }
-              }
-              if (sorted) break;
-            }
-            await browser.close();
-            console.log(sorted ? 'true' : 'false');
-          })();
-          "
+        command: node tests/autograding-tests.js price-sorting-works
         input: ''
         expected-output: 'true'
         comparison-method: exact
@@ -291,7 +166,7 @@ jobs:
       with:
         test-name: Page has lang attribute
         setup-command: ''
-        command: curl -s http://localhost:4173 | grep -o '<html[^>]*lang=' | wc -l
+        command: curl -s http://localhost:4173 | grep -c '<html lang='
         input: ''
         expected-output: '1'
         comparison-method: exact
@@ -305,8 +180,9 @@ jobs:
         test-name: Has semantic HTML
         setup-command: ''
         command: |
-          HEADER=$(curl -s http://localhost:4173 | grep -c '<header>')
-          MAIN=$(curl -s http://localhost:4173 | grep -c '<main>')
+          CONTENT=$(curl -s http://localhost:4173)
+          HEADER=$(echo "$CONTENT" | grep -c '<header>' || echo 0)
+          MAIN=$(echo "$CONTENT" | grep -c '<main ' || echo 0)
           echo $(($HEADER + $MAIN))
         input: ''
         expected-output: '2'
@@ -320,23 +196,7 @@ jobs:
       with:
         test-name: No console errors
         setup-command: ''
-        command: |
-          node -e "
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch();
-            const page = await browser.newPage();
-            let hasErrors = false;
-            page.on('console', msg => {
-              if (msg.type() === 'error') hasErrors = true;
-            });
-            page.on('pageerror', () => hasErrors = true);
-            await page.goto('http://localhost:4173');
-            await page.waitForTimeout(3000);
-            await browser.close();
-            console.log(hasErrors ? 'false' : 'true');
-          })();
-          "
+        command: node tests/autograding-tests.js no-console-errors
         input: ''
         expected-output: 'true'
         comparison-method: exact
