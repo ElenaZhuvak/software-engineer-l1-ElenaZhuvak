@@ -1,0 +1,362 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build project
+      run: npm run build
+
+    - name: Start preview server
+      run: npm run preview >/dev/null 2>&1 & sleep 5
+
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install -y jq
+
+    - name: Install Playwright
+      run: npx playwright install chromium
+
+    # Basic checks
+    - name: Page loads with 200
+      id: page-loads-with-200
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Page loads with 200
+        setup-command: ''
+        command: curl -s -o /dev/null -w "%{http_code}" http://localhost:4173
+        input: ''
+        expected-output: '200'
+        comparison-method: exact
+        timeout: 2
+        max-score: 5
+
+    - name: Data file exists and is valid
+      id: data-file-exists-and-is-valid
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Data file exists and is valid
+        setup-command: ''
+        command: curl -s http://localhost:4173/data.json | jq '.products | length'
+        input: ''
+        expected-output: '20'
+        comparison-method: exact
+        timeout: 2
+        max-score: 5
+
+    # DOM structure checks
+    - name: Has products grid element
+      id: has-products-grid-element
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Has products grid element
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(1000);
+            const grid = await page.$('#products-grid');
+            await browser.close();
+            console.log(grid ? 'true' : 'false');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 5
+
+    - name: Has search input
+      id: has-search-input
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Has search input
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(1000);
+            const input = await page.$('input[type=\"text\"], input[type=\"search\"]');
+            await browser.close();
+            console.log(input ? 'true' : 'false');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 5
+
+    - name: Has filter dropdowns
+      id: has-filter-dropdowns
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Has filter dropdowns
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(1000);
+            const selects = await page.$$('select');
+            await browser.close();
+            console.log(selects.length >= 2 ? 'true' : 'false');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 5
+
+    # Functionality checks
+    - name: Products load and display
+      id: products-load-and-display
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Products load and display
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(2000);
+            const products = await page.$$('#products-grid > *');
+            await browser.close();
+            console.log(products.length >= 10 ? 'true' : 'false');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 10
+
+    - name: Search filters products
+      id: search-filters-products
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Search filters products
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(2000);
+            const initialCount = (await page.$$('#products-grid > *')).length;
+            const input = await page.$('input[type=\"text\"], input[type=\"search\"]');
+            if (!input) { await browser.close(); console.log('false'); return; }
+            await input.fill('iPhone');
+            await page.waitForTimeout(500);
+            const filteredCount = (await page.$$('#products-grid > *')).length;
+            await browser.close();
+            console.log(filteredCount < initialCount && filteredCount > 0 ? 'true' : 'false');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 15
+
+    - name: Category filter works
+      id: category-filter-works
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Category filter works
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(2000);
+            const initialCount = (await page.$$('#products-grid > *')).length;
+            const selects = await page.$$('select');
+            if (selects.length < 1) { await browser.close(); console.log('false'); return; }
+
+            // Try to select Laptops or Phones
+            let filtered = false;
+            for (const select of selects) {
+              const options = await select.$$('option');
+              for (const option of options) {
+                const value = await option.getAttribute('value');
+                const text = await option.textContent();
+                if (text.includes('Laptop') || text.includes('Phone')) {
+                  await select.selectOption(value);
+                  await page.waitForTimeout(500);
+                  const newCount = (await page.$$('#products-grid > *')).length;
+                  if (newCount < initialCount && newCount > 0) {
+                    filtered = true;
+                    break;
+                  }
+                }
+              }
+              if (filtered) break;
+            }
+            await browser.close();
+            console.log(filtered ? 'true' : 'false');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 15
+
+    - name: Price sorting works
+      id: price-sorting-works
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Price sorting works
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(2000);
+
+            const selects = await page.$$('select');
+            if (selects.length < 2) { await browser.close(); console.log('false'); return; }
+
+            // Try to find and use sort dropdown
+            let sorted = false;
+            for (const select of selects) {
+              const options = await select.$$('option');
+              for (const option of options) {
+                const text = await option.textContent();
+                if (text.includes('Low to High') || text.includes('High to Low') || text.includes('Price')) {
+                  const value = await option.getAttribute('value');
+                  await select.selectOption(value);
+                  await page.waitForTimeout(500);
+                  sorted = true;
+                  break;
+                }
+              }
+              if (sorted) break;
+            }
+            await browser.close();
+            console.log(sorted ? 'true' : 'false');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 10
+
+    # Accessibility checks
+    - name: Page has lang attribute
+      id: page-has-lang-attribute
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Page has lang attribute
+        setup-command: ''
+        command: curl -s http://localhost:4173 | grep -o '<html[^>]*lang=' | wc -l
+        input: ''
+        expected-output: '1'
+        comparison-method: exact
+        timeout: 2
+        max-score: 5
+
+    - name: Has semantic HTML
+      id: has-semantic-html
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Has semantic HTML
+        setup-command: ''
+        command: |
+          HEADER=$(curl -s http://localhost:4173 | grep -c '<header>')
+          MAIN=$(curl -s http://localhost:4173 | grep -c '<main>')
+          echo $(($HEADER + $MAIN))
+        input: ''
+        expected-output: '2'
+        comparison-method: exact
+        timeout: 2
+        max-score: 5
+
+    - name: No console errors
+      id: no-console-errors
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: No console errors
+        setup-command: ''
+        command: |
+          node -e "
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            let hasErrors = false;
+            page.on('console', msg => {
+              if (msg.type() === 'error') hasErrors = true;
+            });
+            page.on('pageerror', () => hasErrors = true);
+            await page.goto('http://localhost:4173');
+            await page.waitForTimeout(3000);
+            await browser.close();
+            console.log(hasErrors ? 'false' : 'true');
+          })();
+          "
+        input: ''
+        expected-output: 'true'
+        comparison-method: exact
+        timeout: 10
+        max-score: 10
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        PAGE-LOADS-WITH-200_RESULTS: "${{steps.page-loads-with-200.outputs.result}}"
+        DATA-FILE-EXISTS-AND-IS-VALID_RESULTS: "${{steps.data-file-exists-and-is-valid.outputs.result}}"
+        HAS-PRODUCTS-GRID-ELEMENT_RESULTS: "${{steps.has-products-grid-element.outputs.result}}"
+        HAS-SEARCH-INPUT_RESULTS: "${{steps.has-search-input.outputs.result}}"
+        HAS-FILTER-DROPDOWNS_RESULTS: "${{steps.has-filter-dropdowns.outputs.result}}"
+        PRODUCTS-LOAD-AND-DISPLAY_RESULTS: "${{steps.products-load-and-display.outputs.result}}"
+        SEARCH-FILTERS-PRODUCTS_RESULTS: "${{steps.search-filters-products.outputs.result}}"
+        CATEGORY-FILTER-WORKS_RESULTS: "${{steps.category-filter-works.outputs.result}}"
+        PRICE-SORTING-WORKS_RESULTS: "${{steps.price-sorting-works.outputs.result}}"
+        PAGE-HAS-LANG-ATTRIBUTE_RESULTS: "${{steps.page-has-lang-attribute.outputs.result}}"
+        HAS-SEMANTIC-HTML_RESULTS: "${{steps.has-semantic-html.outputs.result}}"
+        NO-CONSOLE-ERRORS_RESULTS: "${{steps.no-console-errors.outputs.result}}"
+      with:
+        runners: page-loads-with-200,data-file-exists-and-is-valid,has-products-grid-element,has-search-input,has-filter-dropdowns,products-load-and-display,search-filters-products,category-filter-works,price-sorting-works,page-has-lang-attribute,has-semantic-html,no-console-errors

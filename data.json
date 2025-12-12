@@ -1,0 +1,204 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "MacBook Pro 16\"",
+      "category": "Laptops",
+      "price": 2499,
+      "rating": 4.8,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=MacBook+Pro",
+      "description": "Powerful laptop with M3 chip and stunning Retina display"
+    },
+    {
+      "id": 2,
+      "name": "iPhone 15 Pro",
+      "category": "Phones",
+      "price": 999,
+      "rating": 4.7,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=iPhone+15",
+      "description": "Latest iPhone with titanium design and A17 Pro chip"
+    },
+    {
+      "id": 3,
+      "name": "iPad Air",
+      "category": "Tablets",
+      "price": 599,
+      "rating": 4.6,
+      "stock": "Low Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=iPad+Air",
+      "description": "Versatile tablet perfect for work and creativity"
+    },
+    {
+      "id": 4,
+      "name": "AirPods Pro",
+      "category": "Accessories",
+      "price": 249,
+      "rating": 4.5,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=AirPods",
+      "description": "Premium wireless earbuds with active noise cancellation"
+    },
+    {
+      "id": 5,
+      "name": "Dell XPS 13",
+      "category": "Laptops",
+      "price": 1299,
+      "rating": 4.6,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Dell+XPS",
+      "description": "Compact and powerful ultrabook with InfinityEdge display"
+    },
+    {
+      "id": 6,
+      "name": "Samsung Galaxy S24",
+      "category": "Phones",
+      "price": 899,
+      "rating": 4.5,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Galaxy+S24",
+      "description": "Flagship Android phone with AI-powered features"
+    },
+    {
+      "id": 7,
+      "name": "Magic Keyboard",
+      "category": "Accessories",
+      "price": 99,
+      "rating": 4.4,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Keyboard",
+      "description": "Wireless keyboard with numeric keypad and rechargeable battery"
+    },
+    {
+      "id": 8,
+      "name": "ThinkPad X1 Carbon",
+      "category": "Laptops",
+      "price": 1599,
+      "rating": 4.7,
+      "stock": "Low Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=ThinkPad",
+      "description": "Business laptop known for durability and excellent keyboard"
+    },
+    {
+      "id": 9,
+      "name": "Google Pixel 8",
+      "category": "Phones",
+      "price": 699,
+      "rating": 4.6,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Pixel+8",
+      "description": "Google's flagship with best-in-class camera and pure Android"
+    },
+    {
+      "id": 10,
+      "name": "Samsung Galaxy Tab S9",
+      "category": "Tablets",
+      "price": 799,
+      "rating": 4.5,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Tab+S9",
+      "description": "Premium Android tablet with S Pen and AMOLED display"
+    },
+    {
+      "id": 11,
+      "name": "Magic Mouse",
+      "category": "Accessories",
+      "price": 79,
+      "rating": 4.2,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Mouse",
+      "description": "Wireless multi-touch mouse with rechargeable battery"
+    },
+    {
+      "id": 12,
+      "name": "Surface Laptop 5",
+      "category": "Laptops",
+      "price": 1399,
+      "rating": 4.5,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Surface",
+      "description": "Sleek Windows laptop with touchscreen and great battery life"
+    },
+    {
+      "id": 13,
+      "name": "OnePlus 12",
+      "category": "Phones",
+      "price": 799,
+      "rating": 4.4,
+      "stock": "Low Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=OnePlus",
+      "description": "Fast-charging flagship with Hasselblad camera system"
+    },
+    {
+      "id": 14,
+      "name": "iPad Pro 12.9\"",
+      "category": "Tablets",
+      "price": 1099,
+      "rating": 4.8,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=iPad+Pro",
+      "description": "Professional tablet with M2 chip and ProMotion display"
+    },
+    {
+      "id": 15,
+      "name": "USB-C Hub",
+      "category": "Accessories",
+      "price": 49,
+      "rating": 4.3,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=USB+Hub",
+      "description": "7-in-1 multiport adapter with HDMI, USB, and SD card slots"
+    },
+    {
+      "id": 16,
+      "name": "HP Spectre x360",
+      "category": "Laptops",
+      "price": 1499,
+      "rating": 4.6,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Spectre",
+      "description": "Convertible laptop with gem-cut design and long battery life"
+    },
+    {
+      "id": 17,
+      "name": "Nothing Phone 2",
+      "category": "Phones",
+      "price": 599,
+      "rating": 4.3,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Nothing",
+      "description": "Unique transparent design with Glyph interface lighting"
+    },
+    {
+      "id": 18,
+      "name": "Kindle Paperwhite",
+      "category": "Tablets",
+      "price": 139,
+      "rating": 4.7,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Kindle",
+      "description": "E-reader with glare-free display and weeks of battery life"
+    },
+    {
+      "id": 19,
+      "name": "Laptop Stand",
+      "category": "Accessories",
+      "price": 39,
+      "rating": 4.5,
+      "stock": "In Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=Stand",
+      "description": "Aluminum laptop stand with adjustable height and angle"
+    },
+    {
+      "id": 20,
+      "name": "ASUS ROG Zephyrus",
+      "category": "Laptops",
+      "price": 1899,
+      "rating": 4.7,
+      "stock": "Out of Stock",
+      "image": "https://via.placeholder.com/300x200/6366f1/ffffff?text=ROG",
+      "description": "Gaming laptop with RTX 4070 and 165Hz display"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+name: Timebox Enforcement
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-timebox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history
+
+      - name: Check Timebox Compliance
+        run: |
+          #!/bin/bash
+
+          echo "================================"
+          echo "Checking Timebox Compliance"
+          echo "================================"
+          echo ""
+
+          # Check if timestamp file exists
+          if [ ! -f ".assessment-start-time" ]; then
+            echo "❌ ERROR: No .assessment-start-time file found!"
+            echo ""
+            echo "This file should be created automatically when you run 'npm install'."
+            echo "Please ensure you ran 'npm install' and committed the timestamp file."
+            echo ""
+            exit 1
+          fi
+
+          # Read the start timestamp from the file
+          START_TIMESTAMP=$(cat .assessment-start-time)
+          START_TIME_EPOCH=$((START_TIMESTAMP / 1000))
+          START_DATE=$(date -d @$START_TIME_EPOCH '+%Y-%m-%d %H:%M:%S' 2>/dev/null || date -r $START_TIME_EPOCH '+%Y-%m-%d %H:%M:%S')
+
+          # Get the timestamp file commit (should be the first commit after template)
+          TIMESTAMP_COMMIT=$(git log --all --format="%H %at" -- .assessment-start-time | tail -n 1)
+          TIMESTAMP_COMMIT_HASH=$(echo $TIMESTAMP_COMMIT | awk '{print $1}')
+          TIMESTAMP_COMMIT_TIME=$(echo $TIMESTAMP_COMMIT | awk '{print $2}')
+
+          # Get the latest commit timestamp
+          LAST_COMMIT=$(git log --format="%H %at" | head -n 1)
+          LAST_HASH=$(echo $LAST_COMMIT | awk '{print $1}')
+          LAST_TIME=$(echo $LAST_COMMIT | awk '{print $2}')
+          LAST_DATE=$(date -d @$LAST_TIME '+%Y-%m-%d %H:%M:%S' 2>/dev/null || date -r $LAST_TIME '+%Y-%m-%d %H:%M:%S')
+
+          # Calculate time difference in seconds (using commit time, not file content)
+          TIME_DIFF=$((LAST_TIME - TIMESTAMP_COMMIT_TIME))
+
+          # Convert to hours and minutes
+          HOURS=$((TIME_DIFF / 3600))
+          MINUTES=$(((TIME_DIFF % 3600) / 60))
+
+          echo "Assessment started: $START_DATE"
+          echo "Timestamp commit:   $(date -d @$TIMESTAMP_COMMIT_TIME '+%Y-%m-%d %H:%M:%S' 2>/dev/null || date -r $TIMESTAMP_COMMIT_TIME '+%Y-%m-%d %H:%M:%S') (${TIMESTAMP_COMMIT_HASH:0:7})"
+          echo "Last commit:        $LAST_DATE (${LAST_HASH:0:7})"
+          echo "Time elapsed:       ${HOURS}h ${MINUTES}m"
+          echo ""
+
+          # Timebox is 2 hours = 7200 seconds
+          # Add 10 minute grace period for setup, git push, etc.
+          TIMEBOX_SECONDS=7800  # 2h 10m
+
+          if [ $TIME_DIFF -lt 0 ]; then
+            echo "⚠️  WARNING: Timestamp anomaly detected!"
+            echo "Last commit is older than the assessment start time."
+            echo "This indicates timestamp manipulation."
+            echo ""
+            exit 1
+          fi
+
+          if [ $TIME_DIFF -gt $TIMEBOX_SECONDS ]; then
+            echo "⚠️  WARNING: Timebox exceeded!"
+            echo "Maximum allowed: 2 hours (+ 10 min grace period)"
+            echo "Actual time: ${HOURS}h ${MINUTES}m"
+            echo ""
+            echo "This submission will be flagged for review."
+            echo ""
+            exit 1
+          else
+            echo "✅ Timebox check passed!"
+            echo "Work completed within the 2-hour window."
+            echo ""
+          fi
+        shell: bash
+
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run tests
+        run: npm test

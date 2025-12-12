@@ -1,0 +1,25 @@
+{
+  "name": "software-engineer-l1",
+  "version": "1.0.0",
+  "description": "Junior/Grad Developer Interview - Product Filter Challenge",
+  "type": "module",
+  "scripts": {
+    "postinstall": "node scripts/record-start-time.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "test": "npm run test:lint && npm run test:unit",
+    "test:unit": "node tests/run-tests.js",
+    "test:lint": "node tests/validate.js"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "playwright": "^1.40.0"
+  },
+  "keywords": [
+    "interview",
+    "challenge",
+    "frontend",
+    "vanilla-js"
+  ]
+}

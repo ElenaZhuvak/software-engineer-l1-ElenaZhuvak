@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.env
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vite-pid
+SETUP.md
+
+# DO NOT ignore .assessment-start-time - it must be committed!
