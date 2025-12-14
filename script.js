@@ -3,8 +3,8 @@ let allProducts = [];
 let filteredProducts = [];
 
 // DOM elements - add references to your HTML elements here
-const clearSearchBtn = document.getElementById('clear-search');
-const countResults = document.getElementById('count-filter-results');
+const clearSearchBtn = document.getElementById("clear-search");
+const countResults = document.getElementById("count-filter-results");
 const productsGrid = document.getElementById("products-grid");
 const noResults = document.getElementById("no-results");
 
@@ -46,14 +46,14 @@ async function loadProducts() {
 const state = {
     searchQuery: "",
     category: "All",
-    sortBy: "Low to High",
+    sortBy: "featured",
 };
 
 function setupEventListeners() {
     searchInput.addEventListener("input", (e) => {
         state.searchQuery = e.target.value;
         displayClearBtn();
-        applyFilters();
+        debouncedFilter();
     });
     categorySelect.addEventListener("change", (e) => {
         state.category = e.target.value;
@@ -79,25 +79,36 @@ function updateResultsCount() {
 }
 
 // Debounce helper function
-function debounce(func, wait) {
-    // TODO: Implement debounce
-    // Should delay function execution until after 'wait' milliseconds have passed
+function debounce(fn, wait) {
+    let timeoutId
+    return function(...args) {
+        clearTimeout(timeoutId);
+
+        timeoutId = setTimeout(() => {
+            fn.apply(this, args);
+        }, wait)
+    }
 }
+
+const debouncedFilter = debounce(applyFilters, 300);
 
 // Filter and sort products
 function applyFilters() {
     let results = [...allProducts];
 
-    if(state.searchQuery !== '') {
+    if (state.searchQuery !== "") {
         const query = state.searchQuery.toLowerCase();
-        results =  results.filter(product => product.name.toLowerCase().includes(query));
+        results = results.filter((product) =>
+            product.name.toLowerCase().includes(query) || product.description.toLowerCase().includes(query));
     }
-    if(state.category !== 'All') {
-        results = results.filter(product => product.category === state.category);
+    if (state.category !== "All") {
+        results = results.filter(
+            (product) => product.category === state.category
+        );
     }
-    if (state.sortBy === 'Low to High') {
+    if (state.sortBy === "price-asc") {
         results.sort((a, b) => a.price - b.price);
-    } else if (state.sortBy === 'High to Low') {
+    } else if (state.sortBy === "price-desc") {
         results.sort((a, b) => b.price - a.price);
     }
     filteredProducts = results;
@@ -107,16 +118,15 @@ function applyFilters() {
 
 // Setup clear button
 function displayClearBtn() {
-    clearSearchBtn.style.display = searchInput.value.trim() ? 'block' : 'none';
+    clearSearchBtn.style.display = searchInput.value.trim() ? "block" : "none";
 }
 
-clearSearchBtn.addEventListener('click', () => {
-    searchInput.value = '';
-    state.searchQuery = '';
-    displayClearBtn()
+clearSearchBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    state.searchQuery = "";
+    displayClearBtn();
     applyFilters();
-})
-
+});
 
 // Render products to the grid
 function renderProducts(products) {
@@ -139,9 +149,9 @@ function renderProducts(products) {
 
         <p class='product-category'>${product.category}</p>
 
-        <p class='product-price'>${product.price}</p>
+        <p class='product-price'>${formatPrice(product.price)}</p>
 
-        <span class='product-rating'>${product.rating}</span>
+        <span class='product-rating'>${createStarRating(product.rating)}</span>
 
         <p class='product-stock'>${product.stock}</p>
         </li>`;
@@ -155,11 +165,17 @@ function renderProducts(products) {
 // Helper: Format price as currency
 function formatPrice(price) {
     // TODO: Format as USD currency (e.g., $1,299.00)
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+    }).format(price);
 }
 
 // Helper: Create star rating display
 function createStarRating(rating) {
     // TODO: Create visual star rating (e.g., ★★★★☆ for 4.0)
+    const rounded = Math.round(rating);
+    return "★".repeat(rounded) + "☆".repeat(5 - rounded);
 }
 
 // Start the app when DOM is ready
