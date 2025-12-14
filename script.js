@@ -3,14 +3,13 @@ let allProducts = [];
 let filteredProducts = [];
 
 // DOM elements - add references to your HTML elements here
-const productsGrid = document.getElementById('products-grid');
-const noResults = document.getElementById('no-results');
+const productsGrid = document.getElementById("products-grid");
+const noResults = document.getElementById("no-results");
 
 // TODO: Add references to filter elements (search input, category dropdown, sort dropdown)
-const searchInput = document.getElementById('search-filter');
-const categorySelect = document.getElementById('category-filter');
-const sortSelect = document.getElementById('sort-filter');
-
+const searchInput = document.getElementById("search-filter");
+const categorySelect = document.getElementById("category-filter");
+const sortSelect = document.getElementById("sort-filter");
 
 // Initialize app
 async function init() {
@@ -22,9 +21,9 @@ async function init() {
 // Load products from data.json
 async function loadProducts() {
     try {
-        const response = await fetch('./data.json');
+        const response = await fetch("./data.json");
         if (!response.ok) {
-            throw new Error(`HTTP error. Status: ${response.status}`)
+            throw new Error(`HTTP error. Status: ${response.status}`);
         }
 
         const data = await response.json();
@@ -32,19 +31,34 @@ async function loadProducts() {
             throw new Error('Invalid data format: "products" array missing');
         }
         allProducts = data.products;
-        console.log('Products loaded:', allProducts);
-
+        console.log("Products loaded:", allProducts);
     } catch (error) {
-        console.error('Error loading products:', error);
+        console.error("Error loading products:", error);
     }
 }
 
 // Setup event listeners
+const state = {
+    searchQuery: "",
+    category: "All",
+    sortBy: "Low to High",
+};
+
 function setupEventListeners() {
     // TODO: Add event listeners for:
-    // - Search input (with debounce)
-    // - Category filter change
-    // - Sort dropdown change
+
+    searchInput.addEventListener("input", (e) => {
+        state.searchQuery = e.target.value;
+        applyFilters();
+    });
+    categorySelect.addEventListener("change", (e) => {
+        state.category = e.target.value;
+        applyFilters();
+    });
+    sortSelect.addEventListener("change", (e) => {
+        state.sortBy = e.target.value;
+        applyFilters();
+    });
 }
 
 // Debounce helper function
@@ -56,6 +70,8 @@ function debounce(func, wait) {
 // Filter and sort products
 function applyFilters() {
     // TODO: Implement filtering logic
+    let results = [...allProducts];
+    
     // 1. Start with all products
     // 2. Apply search filter (if search term exists)
     // 3. Apply category filter (if not "All")
@@ -66,15 +82,16 @@ function applyFilters() {
 
 // Render products to the grid
 function renderProducts(products) {
-    productsGrid.innerHTML = '';
+    productsGrid.innerHTML = "";
 
     if (!products || products.length === 0) {
         noResults.hidden = false;
         return;
     }
 
-    const markup = products.map(product => {
-        return `
+    const markup = products
+        .map((product) => {
+            return `
         <li class='product-card' role='listitem'>
         <img src='${product.image}'
         alt='${product.name}'
@@ -89,12 +106,12 @@ function renderProducts(products) {
         <span class='product-rating'>${product.rating}</span>
 
         <p class='product-stock'>${product.stock}</p>
-        </li>`;     
-    }).join('');
+        </li>`;
+        })
+        .join("");
 
     productsGrid.innerHTML = markup;
     noResults.hidden = true;
-
 }
 
 // Helper: Format price as currency
@@ -108,8 +125,8 @@ function createStarRating(rating) {
 }
 
 // Start the app when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
 } else {
     init();
 }
