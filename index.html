@@ -8,17 +8,17 @@
     </head>
     <body>
         <div class="container">
-            <header>
-                <h1>Tech Store</h1>
-                <p>Find your perfect tech product</p>
+            <header class="header">
+                <h1 class="header-title">Tech Store</h1>
+                <p class="header-text">Find your perfect tech product</p>
             </header>
 
             <main>
-                <section>
-                    <h2>Filters</h2>
-                    <form>
-                        <div>
-                            <label for="search-filter">Search</label>
+                <section class="filters">
+                    <h2 class="filters-title">Filters</h2>
+                    <form class="filter-form">
+                        <div class="filter-group">
+                            <label for="search-filter" class="filters-label">Search</label>
                             <input
                                 class="search-input"
                                 type="text"
@@ -27,7 +27,7 @@
                                 aria-label="Search products"
                             />
 
-                            <button
+                            <button class="clearBtn"
                                 type="'button"
                                 id="clear-search"
                                 aria-label="Clear search"
@@ -36,9 +36,9 @@
                             </button>
                         </div>
 
-                        <div>
-                            <label for="category-filter">Category</label>
-                            <select 
+                        <div class="filter-group">
+                            <label for="category-filter" class="filters-label">Category</label>
+                            <select class="category-select"
                             id="category-filter"
                             aria-label="Select category product"
                             >
@@ -50,9 +50,9 @@
                         </select>
                         </div>
 
-                        <div>
-                            <label for="sort-filter">Sort by price</label>
-                            <select 
+                        <div class="filter-group">
+                            <label for="sort-filter" class="filters-label">Sort by price</label>
+                            <select class="sortBy-select"
                             id="sort-filter"
                             aria-label="Sort product by price">
                         <option value="price-asc">Low to High</option>
@@ -61,7 +61,7 @@
                         </select>
                         </div>
 
-                        <p 
+                        <p class="filter-results"
                         id="count-filter-results"
                         role="status"
                         aria-live="polite">Showing 0 products</p>
