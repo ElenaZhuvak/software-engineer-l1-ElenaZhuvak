@@ -3,6 +3,7 @@ let allProducts = [];
 let filteredProducts = [];
 
 // DOM elements - add references to your HTML elements here
+const countResults = document.getElementById('count-filter-results');
 const productsGrid = document.getElementById("products-grid");
 const noResults = document.getElementById("no-results");
 
@@ -37,6 +38,7 @@ async function loadProducts() {
     } catch (error) {
         console.error("Error loading products:", error);
     }
+    resultsCount();
 }
 
 // Setup event listeners
@@ -47,7 +49,6 @@ const state = {
 };
 
 function setupEventListeners() {
-    // TODO: Add event listeners for:
 
     searchInput.addEventListener("input", (e) => {
         state.searchQuery = e.target.value;
@@ -63,6 +64,18 @@ function setupEventListeners() {
     });
 }
 
+function resultsCount() {
+    const count = allProducts.length;
+    console.log("Total products loaded:", count);
+
+    countResults.textContent = `Showing ${count} products`;
+}
+
+function updateResultsCount() {
+    const count = filteredProducts.length;
+    countResults.textContent = `Showing ${count} products`;
+}
+
 // Debounce helper function
 function debounce(func, wait) {
     // TODO: Implement debounce
@@ -71,7 +84,6 @@ function debounce(func, wait) {
 
 // Filter and sort products
 function applyFilters() {
-    // TODO: Implement filtering logic
     let results = [...allProducts];
 
     if(state.searchQuery !== '') {
@@ -88,6 +100,7 @@ function applyFilters() {
     }
     filteredProducts = results;
     renderProducts(filteredProducts);
+    updateResultsCount();
 }
 
 // Render products to the grid
