@@ -3,6 +3,7 @@ let allProducts = [];
 let filteredProducts = [];
 
 // DOM elements - add references to your HTML elements here
+const clearSearchBtn = document.getElementById('clear-search');
 const countResults = document.getElementById('count-filter-results');
 const productsGrid = document.getElementById("products-grid");
 const noResults = document.getElementById("no-results");
@@ -49,9 +50,9 @@ const state = {
 };
 
 function setupEventListeners() {
-
     searchInput.addEventListener("input", (e) => {
         state.searchQuery = e.target.value;
+        displayClearBtn();
         applyFilters();
     });
     categorySelect.addEventListener("change", (e) => {
@@ -64,6 +65,7 @@ function setupEventListeners() {
     });
 }
 
+// Setup products counting
 function resultsCount() {
     const count = allProducts.length;
     console.log("Total products loaded:", count);
@@ -102,6 +104,19 @@ function applyFilters() {
     renderProducts(filteredProducts);
     updateResultsCount();
 }
+
+// Setup clear button
+function displayClearBtn() {
+    clearSearchBtn.style.display = searchInput.value.trim() ? 'block' : 'none';
+}
+
+clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    state.searchQuery = '';
+    displayClearBtn()
+    applyFilters();
+})
+
 
 // Render products to the grid
 function renderProducts(products) {
