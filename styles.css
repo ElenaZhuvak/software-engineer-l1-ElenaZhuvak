@@ -37,6 +37,7 @@ body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     line-height: 1.6;
+    font-size: 14px;
 }
 
 .container {
@@ -70,7 +71,23 @@ li {
     margin-bottom: 12px;
 }
 .filters-label {
-    font-style: 12px;
+    font-size: 12px;
+}
+.input-box {
+    display: flex;
+    gap: 8px;
+}
+.clearBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border-style: none;
+    cursor: pointer;
+    
+}
+.clearBtn:hover,
+.clearBtn:focus {
+    outline: 2px solid #6366f1;
 }
 
 .search-input,
@@ -81,15 +98,21 @@ li {
     border-radius: 8px;
     padding: 10px 16px;
 }
-
+.category-select,
+.sortBy-select {
+    width: 180px;
+}
 .filter-results {
-    font-style: 14px;
+    font-size: 14px;
     color: var(--text-secondary);
 }
 
 /* TODO: Add products grid styles */
 /* Remember: 1 column on mobile, 2 on tablet, 3 on desktop */
 @media (max-width: 639px) {
+    .search-input {
+        width: 100%;
+    }
     .products-grid {
         display: grid;
         gap: 24px;
@@ -97,6 +120,9 @@ li {
     }
 }
 @media (min-width: 640px) and (max-width: 1023px) {
+    .search-input {
+        width: 300px;
+    }
     .products-grid {
         display: grid;
         gap: 24px;
@@ -104,6 +130,10 @@ li {
     }
 }
 @media (min-width: 1024px) {
+    .search-input {
+        width: 300px;
+    }
+
     .products-grid {
         display: grid;
         gap: 24px;
@@ -118,11 +148,49 @@ li {
     padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     background-color: var(--bg-card);
+    transform: translateY(-4px);
+}
+.product-card:hover,
+.product-card:focus {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+.product-price {
+    font-size: 20px;
+    font-style: bold;
+    color: var(--text-primary);
+}
+.product-rating {
+    font-size: 16px;
+}
+.full-star {
+    color: var(--star-filled);
+}
+.empty-star {
+    color: var(--star-empty);
+}
+.product-stock {
+    font-size: 14px;
+}
+.stock-in {
+    color: var(--success);
+}
+.stock-low {
+    color: var(--warning);
+}
+.stock-out {
+    color: var(--error);
 }
 
 /* TODO: Add no results message styles */
-
-/* TODO: Add responsive breakpoints */
-/* Mobile: < 640px */
-/* Tablet: 640px - 1024px */
-/* Desktop: > 1024px */
+.no-results {
+    font-size: 14px;
+    color: var(--text-secondary);
+}

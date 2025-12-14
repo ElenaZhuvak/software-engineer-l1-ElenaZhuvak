@@ -153,7 +153,7 @@ function renderProducts(products) {
 
         <span class='product-rating'>${createStarRating(product.rating)}</span>
 
-        <p class='product-stock'>${product.stock}</p>
+        <p class='product-stock'>${getStockStatus(product.stock)}</p>
         </li>`;
         })
         .join("");
@@ -173,9 +173,28 @@ function formatPrice(price) {
 
 // Helper: Create star rating display
 function createStarRating(rating) {
-    // TODO: Create visual star rating (e.g., ★★★★☆ for 4.0)
     const rounded = Math.round(rating);
-    return "★".repeat(rounded) + "☆".repeat(5 - rounded);
+    let stars = '';
+
+    for (let i = 1; i <= 5; i ++) {
+        if (i <= rounded) {
+            stars += `<span class='full-star'>★</span>`
+        } else {
+            stars += `<span class='empty-star'>☆</span>`
+        }
+    }
+    return stars;
+}
+
+// Helper: Create stock status in colors
+function getStockStatus(stock) {
+    if (stock === 'In Stock') {
+        return `<span class='stock-in'>In Stock</span>`
+    }
+    if (stock === 'Low Stock') {
+        return `<span class='stock-low'>Low Stock</span>`
+    }
+    return `<span class='stock-out'>Out of Stock</span>`
 }
 
 // Start the app when DOM is ready
