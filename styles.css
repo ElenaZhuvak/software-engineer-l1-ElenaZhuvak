@@ -45,6 +45,9 @@ body {
     padding: 20px;
 }
 
+li {
+    list-style: none;
+}
 /* TODO: Add header styles */
 .header {
     text-align: center;
@@ -81,7 +84,7 @@ body {
 
 .filter-results {
     font-style: 14px;
-    color: var(--text-secondary)
+    color: var(--text-secondary);
 }
 
 /* TODO: Add products grid styles */
