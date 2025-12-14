@@ -32,6 +32,8 @@ async function loadProducts() {
         }
         allProducts = data.products;
         console.log("Products loaded:", allProducts);
+
+        filteredProducts = [...allProducts];
     } catch (error) {
         console.error("Error loading products:", error);
     }
@@ -71,13 +73,21 @@ function debounce(func, wait) {
 function applyFilters() {
     // TODO: Implement filtering logic
     let results = [...allProducts];
-    
-    // 1. Start with all products
-    // 2. Apply search filter (if search term exists)
-    // 3. Apply category filter (if not "All")
-    // 4. Apply sorting
-    // 5. Update filteredProducts
-    // 6. Call renderProducts()
+
+    if(state.searchQuery !== '') {
+        const query = state.searchQuery.toLowerCase();
+        results =  results.filter(product => product.name.toLowerCase().includes(query));
+    }
+    if(state.category !== 'All') {
+        results = results.filter(product => product.category === state.category);
+    }
+    if (state.sortBy === 'Low to High') {
+        results.sort((a, b) => a.price - b.price);
+    } else if (state.sortBy === 'High to Low') {
+        results.sort((a, b) => b.price - a.price);
+    }
+    filteredProducts = results;
+    renderProducts(filteredProducts);
 }
 
 // Render products to the grid
