@@ -1,34 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Filter - Tech Store</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Tech Store</h1>
-            <p>Find your perfect tech product</p>
-        </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Product Filter - Tech Store</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Tech Store</h1>
+                <p>Find your perfect tech product</p>
+            </header>
 
-        <div class="filters">
-            <!-- TODO: Add search input -->
-            <!-- TODO: Add category filter dropdown -->
-            <!-- TODO: Add sort dropdown -->
-            <!-- TODO: Add results count display -->
+            <main>
+                <section>
+                    <h2>Filters</h2>
+                    <form>
+                        <div>
+                            <label for="search-filter">Search</label>
+                            <input
+                                class="search-input"
+                                type="text"
+                                id="search-filter"
+                                placeholder="Search products..."
+                                aria-label="Search products"
+                            />
+
+                            <button
+                                type="'button"
+                                id="clear-search"
+                                aria-label="Clear search"
+                            >
+                                x
+                            </button>
+                        </div>
+
+                        <div>
+                            <label for="category-filter">Category</label>
+                            <select 
+                            id="category-filter"
+                            aria-label="Select category product"
+                            >
+                            <option value="All">All categories</option>
+                            <option value="Laptops">Laptops</option>
+                            <option value="Phones">Phones</option>
+                            <option value="Tablets">Tablets</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+                        </div>
+
+                        <div>
+                            <label for="sort-filter">Sort by price</label>
+                            <select 
+                            id="sort-filter"
+                            aria-label="Sort product by price">
+                        <option value="price-asc">Low to High</option>
+                        <option value="price-desc">High to Low</option>
+                        <option value="featured">Featured</option>
+                        </select>
+                        </div>
+
+                        <p 
+                        id="count-filter-results"
+                        role="status"
+                        aria-live="polite">Showing 0 products</p>
+                    </form>
+                </section>
+
+                <section>
+                    <ul
+                        class="products-grid"
+                        id="products-grid"
+                        role="list"
+                    ></ul>
+                </section>
+                <p class="no-results"
+                id="no-results"
+                role="status"
+                aria-live="polite"
+                hidden>
+                    No products found matching your criteria.
+                </p>
+            </main>
+
         </div>
 
-        <main id="products-grid" class="products-grid">
-            <!-- Products will be rendered here by JavaScript -->
-        </main>
-
-        <div id="no-results" class="no-results" hidden>
-            <!-- TODO: Add "no results" message -->
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>
