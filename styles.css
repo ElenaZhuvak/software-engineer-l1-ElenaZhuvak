@@ -89,8 +89,36 @@ li {
 
 /* TODO: Add products grid styles */
 /* Remember: 1 column on mobile, 2 on tablet, 3 on desktop */
+@media (max-width: 639px) {
+    .products-grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+    .products-grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 1024px) {
+    .products-grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
 
 /* TODO: Add product card styles */
+.product-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background-color: var(--bg-card);
+}
 
 /* TODO: Add no results message styles */
 

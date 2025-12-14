@@ -93,13 +93,8 @@ function renderProducts(products) {
     }).join('');
 
     productsGrid.innerHTML = markup;
+    noResults.hidden = true;
 
-    //   - Image with alt text
-    //   - Name
-    //   - Category badge
-    //   - Price (formatted as currency)
-    //   - Rating (star display)
-    //   - Stock status
 }
 
 // Helper: Format price as currency
