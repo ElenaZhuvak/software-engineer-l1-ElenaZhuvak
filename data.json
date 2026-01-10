@@ -2,7 +2,7 @@
   "products": [
     {
       "id": 1,
-      "name": "MacBook Pro 16\"",
+      "name": "MacBook Pro 16",
       "category": "Laptops",
       "price": 2499,
       "rating": 4.8,

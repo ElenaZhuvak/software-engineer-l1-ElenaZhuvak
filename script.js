@@ -24,11 +24,13 @@ async function init() {
 async function loadProducts() {
     try {
         const response = await fetch("./data.json");
+        console.log("response", response);
         if (!response.ok) {
             throw new Error(`HTTP error. Status: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log("data", data);
         if (!data.products || !Array.isArray(data.products)) {
             throw new Error('Invalid data format: "products" array missing');
         }
@@ -68,8 +70,6 @@ function setupEventListeners() {
 // Setup products counting
 function resultsCount() {
     const count = allProducts.length;
-    console.log("Total products loaded:", count);
-
     countResults.textContent = `Showing ${count} products`;
 }
 
@@ -159,6 +159,7 @@ function renderProducts(products) {
         .join("");
 
     productsGrid.innerHTML = markup;
+
     noResults.hidden = true;
 }
 
@@ -177,7 +178,7 @@ function createStarRating(rating) {
     let stars = '';
 
     for (let i = 1; i <= 5; i ++) {
-        if (i <= rounded) {
+        if (i <= rounded) { 
             stars += `<span class='full-star'>★</span>`
         } else {
             stars += `<span class='empty-star'>☆</span>`
@@ -189,7 +190,7 @@ function createStarRating(rating) {
 // Helper: Create stock status in colors
 function getStockStatus(stock) {
     if (stock === 'In Stock') {
-        return `<span class='stock-in'>In Stock</span>`
+        return `<p class='stock-in'>In Stock</p>`
     }
     if (stock === 'Low Stock') {
         return `<span class='stock-low'>Low Stock</span>`

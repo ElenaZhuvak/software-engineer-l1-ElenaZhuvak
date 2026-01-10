@@ -164,7 +164,7 @@ li {
 }
 .product-price {
     font-size: 20px;
-    font-style: bold;
+    font-weight: 700;
     color: var(--text-primary);
 }
 .product-rating {
