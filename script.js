@@ -7,11 +7,16 @@ const clearSearchBtn = document.getElementById("clear-search");
 const countResults = document.getElementById("count-filter-results");
 const productsGrid = document.getElementById("products-grid");
 const noResults = document.getElementById("no-results");
+console.log("noResults:", noResults);
+
 
 // TODO: Add references to filter elements (search input, category dropdown, sort dropdown)
 const searchInput = document.getElementById("search-filter");
 const categorySelect = document.getElementById("category-filter");
 const sortSelect = document.getElementById("sort-filter");
+// const checkBoxEl = document.getElementById("inStock-filter");
+const maxPriceEl = document.getElementById('maxPrice');
+
 
 // Initialize app
 async function init() {
@@ -24,7 +29,7 @@ async function init() {
 async function loadProducts() {
     try {
         const response = await fetch("./data.json");
-        console.log("response", response);
+        console.log("response after fetch", response);
         if (!response.ok) {
             throw new Error(`HTTP error. Status: ${response.status}`);
         }
@@ -47,8 +52,10 @@ async function loadProducts() {
 // Setup event listeners
 const state = {
     searchQuery: "",
-    category: "All",
+    category: "all",
     sortBy: "featured",
+    // stock: false,
+    // maxPrice: false,
 };
 
 function setupEventListeners() {
@@ -65,6 +72,16 @@ function setupEventListeners() {
         state.sortBy = e.target.value;
         applyFilters();
     });
+   /* checkBoxEl.addEventListener('change', (e) => {
+        state.stock = e.target.checked;
+        applyFilters(); 
+    })*/
+
+        // maxPriceEl.addEventListener('change', (e) => {
+        //     state.maxPrice = e.target.checked;
+        //     applyFilters();
+        // })
+
 }
 
 // Setup products counting
@@ -96,21 +113,32 @@ const debouncedFilter = debounce(applyFilters, 300);
 function applyFilters() {
     let results = [...allProducts];
 
-    if (state.searchQuery !== "") {
-        const query = state.searchQuery.toLowerCase();
+    const query = state.searchQuery.trim().toLowerCase(); /* add method trim() to avoid incorrect rendering */
+    if (query !== "") {
         results = results.filter((product) =>
             product.name.toLowerCase().includes(query) || product.description.toLowerCase().includes(query));
     }
+
     if (state.category !== "All") {
         results = results.filter(
             (product) => product.category === state.category
         );
     }
-    if (state.sortBy === "price-asc") {
+
+    // if (state.stock) {
+    //     results = results.filter((product) => product.stock === "In Stock");
+    // }
+
+    // if (state.maxPrice) {
+    //     results = results.filter((product) => product.price <= 1000);
+    // }
+
+    if (state.sortBy === "low-to-high") {
         results.sort((a, b) => a.price - b.price);
-    } else if (state.sortBy === "price-desc") {
+    } else if (state.sortBy === "high-to-low") {
         results.sort((a, b) => b.price - a.price);
     }
+    
     filteredProducts = results;
     renderProducts(filteredProducts);
     updateResultsCount();
@@ -124,6 +152,13 @@ function displayClearBtn() {
 clearSearchBtn.addEventListener("click", () => {
     searchInput.value = "";
     state.searchQuery = "";
+
+    categorySelect.value = "All"; //add clear category
+    state.category = "All";
+
+    sortSelect.value = "featured"; // add clear sort by price
+    state.sortBy = "Featured";
+
     displayClearBtn();
     applyFilters();
 });
@@ -160,7 +195,7 @@ function renderProducts(products) {
 
     productsGrid.innerHTML = markup;
 
-    noResults.hidden = true;
+    noResults.hidden = true;  /* no need as the condition works */
 }
 
 // Helper: Format price as currency
@@ -193,9 +228,9 @@ function getStockStatus(stock) {
         return `<p class='stock-in'>In Stock</p>`
     }
     if (stock === 'Low Stock') {
-        return `<span class='stock-low'>Low Stock</span>`
+        return `<p class='stock-low'>Low Stock</p>`
     }
-    return `<span class='stock-out'>Out of Stock</span>`
+    return `<p class='stock-out'>Out of Stock</p>`
 }
 
 // Start the app when DOM is ready

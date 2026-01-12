@@ -18,7 +18,9 @@
                     <h2 class="filters-title">Filters</h2>
                     <form class="filter-form">
                         <div class="filter-group">
-                            <label for="search-filter" class="filters-label">Search</label>
+                            <label for="search-filter" class="filters-label"
+                                >Search</label
+                            >
                             <div class="input-box">
                                 <input
                                     class="search-input"
@@ -27,8 +29,9 @@
                                     placeholder="Search products..."
                                     aria-label="Search products"
                                 />
-    
-                                <button class="clearBtn"
+
+                                <button
+                                    class="clearBtn"
                                     type="button"
                                     id="clear-search"
                                     aria-label="Clear search"
@@ -40,34 +43,59 @@
                         </div>
 
                         <div class="filter-group">
-                            <label for="category-filter" class="filters-label">Category</label>
-                            <select class="category-select"
-                            id="category-filter"
-                            aria-label="Select category product"
+                            <label for="category-filter" class="filters-label"
+                                >Category</label
                             >
-                            <option value="All">All categories</option>
-                            <option value="Laptops">Laptops</option>
-                            <option value="Phones">Phones</option>
-                            <option value="Tablets">Tablets</option>
-                            <option value="Accessories">Accessories</option>
-                        </select>
+                            <select
+                                class="category-select"
+                                id="category-filter"
+                                aria-label="Select category product"
+                            >
+                                <option value="All">All categories</option>
+                                <option value="Laptops">Laptops</option>
+                                <option value="Phones">Phones</option>
+                                <option value="Tablets">Tablets</option>
+                                <option value="Accessories">Accessories</option>
+                            </select>
                         </div>
 
                         <div class="filter-group">
-                            <label for="sort-filter" class="filters-label">Sort by price</label>
-                            <select class="sortBy-select"
-                            id="sort-filter"
-                            aria-label="Sort product by price">
-                        <option value="price-asc">Low to High</option>
-                        <option value="price-desc">High to Low</option>
-                        <option value="featured">Featured</option>
-                        </select>
+                            <label for="sort-filter" class="filters-label"
+                                >Sort by price</label
+                            >
+                            <select
+                                class="sortBy-select"
+                                id="sort-filter"
+                                aria-label="Sort product by price"
+                            >
+                                <option value="featured">Featured</option>
+                                <option value="low-to-high">Low to High</option>
+                                <option value="high-to-low">High to Low</option>
+                            </select>
                         </div>
 
-                        <p class="filter-results"
-                        id="count-filter-results"
-                        role="status"
-                        aria-live="polite">Showing 0 products</p>
+                        <!-- <div>
+                            <label>Stock</label>
+                            <input type="checkbox"
+                            value="stock";
+                            id="inStock-filter" />
+                        </div> -->
+<!-- 
+                        <div>
+                            <label for="max-price">MaxPrise</label>
+                            <input type="checkbox"
+                            value="1000"
+                            id="maxPrice">
+                        </div> -->
+
+                        <p
+                            class="filter-results"
+                            id="count-filter-results"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            Showing 0 products
+                        </p>
                     </form>
                 </section>
 
@@ -78,15 +106,16 @@
                         role="list"
                     ></ul>
                 </section>
-                <p class="no-results"
-                id="no-results"
-                role="status"
-                aria-live="polite"
-                hidden>
+                <p
+                    class="no-results"
+                    id="no-results"
+                    role="status"
+                    aria-live="polite"
+                    hidden
+                >
                     No products found matching your criteria.
                 </p>
             </main>
-
         </div>
 
         <script type="module" src="./script.js"></script>
